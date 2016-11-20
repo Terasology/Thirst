@@ -1,0 +1,26 @@
+{
+    "type": "ThirstWindow",
+    "skin": "HUD",
+    "contents": {
+        "type": "relativeLayout",
+        "contents": [
+            {
+                "type": "UILoadBar",
+                "id": "thirst",
+                "animate": false,
+                "fillTexture": "Thirst:thirstBar",
+                "layoutInfo": {
+                    "width": 200,
+                    "height": 10,
+                    "position-horizontal-center": {
+                        "offset": 150
+                    },
+                    "position-bottom": {
+                        "target": "BOTTOM",
+                        "offset": 80
+                    }
+                }
+            }
+        ]
+    }
+}
