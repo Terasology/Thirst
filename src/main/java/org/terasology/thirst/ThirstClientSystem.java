@@ -22,13 +22,19 @@ import org.terasology.registry.In;
 import org.terasology.rendering.nui.NUIManager;
 
 /**
+ * Client system that handles how the Thirst HUD widget component is displayed.
+ *
  * @author Marcin Sciesinski <marcins78@gmail.com>
  */
 @RegisterSystem(RegisterMode.CLIENT)
 public class ThirstClientSystem extends BaseComponentSystem {
+    /** An instance of the UI manager */
     @In
     private NUIManager nuiManager;
 
+    /**
+     * Add the Thirst HUD component to the game's HUD at launch time.
+     */
     @Override
     public void preBegin() {
         nuiManager.getHUD().addHUDElement("Thirst:Thirst");

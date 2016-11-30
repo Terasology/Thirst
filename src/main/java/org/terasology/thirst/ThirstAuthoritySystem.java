@@ -31,6 +31,9 @@ import org.terasology.thirst.component.DrinkComponent;
 import org.terasology.thirst.component.ThirstComponent;
 import org.terasology.thirst.event.DrinkConsumedEvent;
 
+/**
+ * This authority system handles drink consumption by various entities.
+ */
 @RegisterSystem(value = RegisterMode.AUTHORITY)
 public class ThirstAuthoritySystem extends BaseComponentSystem {
     @In
@@ -38,6 +41,13 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     @In
     private Time time;
 
+    /**
+     * Initialize thirst attributes for a spawned player. Called when a player is spawned.
+     *
+     * @param event  the event corresponding to the spawning of the player
+     * @param player a reference to the player entity
+     * @param thirst a thirst component to assign to the player
+     */
     @ReceiveEvent
     public void onPlayerSpawn(OnPlayerSpawnedEvent event, EntityRef player,
                               ThirstComponent thirst) {
@@ -46,6 +56,13 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
         player.saveComponent(thirst);
     }
 
+    /**
+     * Defines what to do when an entity is removed.
+     *
+     * @param event  the event corresponding to the removal of an entity
+     * @param entity the entity being removed
+     * @param thirst the thirst component associated with the entity
+     */
     @ReceiveEvent
     public void beforeRemoval(BeforeDeactivateComponent event, EntityRef entity, ThirstComponent thirst) {
         thirst.lastCalculatedWater = ThirstUtils.getThirstForEntity(entity);
@@ -53,6 +70,13 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
         entity.saveComponent(thirst);
     }
 
+    /**
+     * Defines what happens when a drink is consumed.
+     *
+     * @param event the event corresponding to the consumption of a drink
+     * @param item  the item that the player is drinking
+     * @param drink the drink component associated with the item being consumed
+     */
     @ReceiveEvent
     public void drinkConsumed(ActivateEvent event, EntityRef item, DrinkComponent drink) {
         float filling = drink.filling;
@@ -67,6 +91,13 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
         }
     }
 
+    /**
+     * Updates the thirst attribute of the character upon movement.
+     *
+     * @param event     the event associated with the movement of the character
+     * @param character the character that has moved
+     * @param thirst    the thirst component associated with the character
+     */
     @ReceiveEvent
     public void characterMoved(CharacterMoveInputEvent event, EntityRef character, ThirstComponent thirst) {
         final float expectedDecay = event.isRunning() ? thirst.sprintDecayPerSecond : thirst.normalDecayPerSecond;

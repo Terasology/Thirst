@@ -19,6 +19,8 @@ import org.terasology.entitySystem.Component;
 import org.terasology.network.Replicate;
 
 /**
+ * This component stores attributes of an entity that relate to its thirst.
+ *
  * @author UltimateBudgie <TheUltimateBudgie@gmail.com>
  */
 public class ThirstComponent implements Component {
@@ -30,32 +32,27 @@ public class ThirstComponent implements Component {
     @Replicate
     public float maxWaterCapacity = 100;
 
+    /** The value of the entity's water capacity when it was last calculated */
     @Replicate
     public float lastCalculatedWater;
 
+    /** The time when the entity's water capacity was last calculated */
     @Replicate
     public long lastCalculationTime;
 
-    /**
-     * The decay of thirst under normal movement conditions
-     */
+    /** The decay of thirst under normal movement condition */
     @Replicate
     public float normalDecayPerSecond = 0.05f;
-    /**
-     * The decay of thirst under sprint movement conditions
-     */
+
+    /** The decay of thirst under sprint movement conditions */
     @Replicate
     public float sprintDecayPerSecond = 0.2f;
 
-    /**
-     * Current decay of thirst
-     */
+    /** Current decay of thirst */
     @Replicate
     public float waterDecayPerSecond = normalDecayPerSecond;
 
-    /**
-     * If the entity's water capacity is < to this threshold, sprinting is disabled!
-     */
+    /** The water capacity below which sprinting is disabled */
     @Replicate
     public float sprintLossThreshold = 50;
 }
