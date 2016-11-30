@@ -26,11 +26,17 @@ import org.terasology.thirst.ThirstUtils;
 import org.terasology.thirst.component.ThirstComponent;
 
 /**
+ * This HUD widget will display information relating to the player's thirst, specifically, how thirsty the player is.
  * @author Marcin Sciesinski <marcins78@gmail.com>
  */
 public class ThirstWindow extends CoreHudWidget {
+
+    /**
+     * Initialize the HUD widget and the UILoadBar that will display the player's thirst.
+     */
     @Override
     public void initialise() {
+        // Initialize a UILoadBar to display the player's thirst.
         UILoadBar thirst = find("thirst", UILoadBar.class);
         thirst.bindVisible(new ReadOnlyBinding<Boolean>() {
             @Override

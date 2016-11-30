@@ -21,12 +21,20 @@ import org.terasology.registry.CoreRegistry;
 import org.terasology.thirst.component.ThirstComponent;
 
 /**
- * @author Marcin Sciesinski <marcins78@gmail.com>
+ * This class contains utility methods for the Thirst module. Specifically, it includes a method that returns the thirst
+ * of a given entity.
  */
 public final class ThirstUtils {
+
     private ThirstUtils() {
     }
 
+    /**
+     * Returns the current thirst of a given entity.
+     *
+     * @param entity the entity whose thirst value needs to be returned
+     * @return       the current thirst of the entity
+     */
     public static float getThirstForEntity(EntityRef entity) {
         ThirstComponent thirst = entity.getComponent(ThirstComponent.class);
         if (thirst == null) {
