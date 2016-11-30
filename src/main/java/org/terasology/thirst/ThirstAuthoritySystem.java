@@ -46,7 +46,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
      *
      * @param event  the event corresponding to the spawning of the player
      * @param player a reference to the player entity
-     * @param thirst a thirst component to assign to the player
+     * @param thirst the player's thirst component (to be initialized)
      */
     @ReceiveEvent
     public void onPlayerSpawn(OnPlayerSpawnedEvent event, EntityRef player,
@@ -57,7 +57,8 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     }
 
     /**
-     * Defines what to do when an entity is removed.
+     * Updates the thirst component of an entity one last time before it is removed. Called when the entity is being
+     * removed.
      *
      * @param event  the event corresponding to the removal of an entity
      * @param entity the entity being removed
@@ -71,7 +72,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     }
 
     /**
-     * Defines what happens when a drink is consumed.
+     * Applies the drink's filling attribute to the instigator of the ActionEvent (the entity consuming the drink).
      *
      * @param event the event corresponding to the consumption of a drink
      * @param item  the item that the player is drinking
@@ -92,7 +93,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     }
 
     /**
-     * Updates the thirst attribute of the character upon movement.
+     * Updates the thirst attribute of the character upon movement, so that moving causes players to become thirsty.
      *
      * @param event     the event associated with the movement of the character
      * @param character the character that has moved

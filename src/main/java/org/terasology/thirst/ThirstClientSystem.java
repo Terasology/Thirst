@@ -23,8 +23,6 @@ import org.terasology.rendering.nui.NUIManager;
 
 /**
  * Client system that handles how the Thirst HUD widget component is displayed.
- *
- * @author Marcin Sciesinski <marcins78@gmail.com>
  */
 @RegisterSystem(RegisterMode.CLIENT)
 public class ThirstClientSystem extends BaseComponentSystem {

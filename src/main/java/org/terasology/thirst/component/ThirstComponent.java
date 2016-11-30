@@ -20,8 +20,6 @@ import org.terasology.network.Replicate;
 
 /**
  * This component stores attributes of an entity that relate to its thirst.
- *
- * @author UltimateBudgie <TheUltimateBudgie@gmail.com>
  */
 public class ThirstComponent implements Component {
     //General Thirst Settings
@@ -36,7 +34,7 @@ public class ThirstComponent implements Component {
     @Replicate
     public float lastCalculatedWater;
 
-    /** The time when the entity's water capacity was last calculated */
+    /** The game time when the entity's water capacity was last calculated */
     @Replicate
     public long lastCalculationTime;
 
