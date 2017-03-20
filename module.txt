@@ -3,6 +3,11 @@
     "version" : "1.0.0-SNAPSHOT",
     "author" : "UltimateBudgie, Marcin Sciesinski <marcins78@gmail.com>, Mandar Juvekar",
     "displayName" : "Thirst and Drink",
-    "dependencies" : [],
+    "dependencies" : [
+         {
+             "id" : "Fluid",
+             "minVersion" : "1.0.0"
+         }
+     ],
     "description" : "This module introduces Thirst and various related effects."
 }

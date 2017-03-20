@@ -15,16 +15,23 @@
  */
 package org.terasology.thirst;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.terasology.engine.Time;
 import org.terasology.entitySystem.entity.EntityManager;
 import org.terasology.entitySystem.entity.EntityRef;
 import org.terasology.entitySystem.entity.lifecycleEvents.BeforeDeactivateComponent;
+import org.terasology.entitySystem.event.EventPriority;
 import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.fluid.component.FluidContainerItemComponent;
+import org.terasology.fluid.system.FluidUtils;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.common.ActivateEvent;
+import org.terasology.logic.inventory.InventoryManager;
+import org.terasology.logic.inventory.ItemComponent;
 import org.terasology.logic.players.event.OnPlayerSpawnedEvent;
 import org.terasology.registry.In;
 import org.terasology.thirst.component.DrinkComponent;
@@ -36,8 +43,11 @@ import org.terasology.thirst.event.DrinkConsumedEvent;
  */
 @RegisterSystem(value = RegisterMode.AUTHORITY)
 public class ThirstAuthoritySystem extends BaseComponentSystem {
+    private static final Logger logger = LoggerFactory.getLogger(ThirstAuthoritySystem.class);
     @In
     private EntityManager entityManager;
+    @In
+    private InventoryManager inventoryManager;
     @In
     private Time time;
 
@@ -74,7 +84,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     /**
      * Applies the drink's filling attribute to the instigator of the ActionEvent (the entity consuming the drink).
      *
-     * @param event the event corresponding to the consumption of a drink
+     * @param event the event corresponding to the interaction with the drink
      * @param item  the item that the player is drinking
      * @param drink the drink component associated with the item being consumed
      */
@@ -87,9 +97,35 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
             thirst.lastCalculatedWater = Math.min(thirst.maxWaterCapacity, ThirstUtils.getThirstForEntity(instigator) + filling);
             thirst.lastCalculationTime = time.getGameTimeInMs();
             instigator.saveComponent(thirst);
-            item.send(new DrinkConsumedEvent());
+            item.send(new DrinkConsumedEvent(event));
             event.consume();
         }
+    }
+
+    /**
+     * Deals with events happening after drink consumption, like removing water from the vessel
+     *
+     * @param event the event corresponding to the consumption of a drink
+     * @param item  the item that the player is drinking
+     */
+    @ReceiveEvent(components = ItemComponent.class, priority = EventPriority.PRIORITY_TRIVIAL)
+    public void usedItem(DrinkConsumedEvent event, EntityRef item) {
+        if (item.hasComponent(FluidContainerItemComponent.class)) {
+            logger.info("nihal111");
+            EntityRef owner = item.getOwner();
+            final EntityRef removedItem = inventoryManager.removeItem(owner, event.getInstigator(), item, false, 1);
+            if (removedItem != null) {
+                FluidUtils.setFluidForContainerItem(removedItem, null);
+                if (!inventoryManager.giveItem(owner, event.getInstigator(), removedItem)) {
+                    removedItem.destroy();
+                }
+            }
+        }
+//        ItemComponent itemComp = item.getComponent(ItemComponent.class);
+//        if (itemComp.consumedOnUse) {
+//            int slot = InventoryUtils.getSlotWithItem(event.getInstigator(), item);
+//            inventoryManager.removeItem(event.getInstigator(), event.getInstigator(), slot, true, 1);
+//        }
     }
 
     /**
