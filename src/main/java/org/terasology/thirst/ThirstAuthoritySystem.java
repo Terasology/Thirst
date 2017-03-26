@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 MovingBlocks
+ * Copyright 2017 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -111,7 +111,6 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     @ReceiveEvent(components = ItemComponent.class, priority = EventPriority.PRIORITY_TRIVIAL)
     public void usedItem(DrinkConsumedEvent event, EntityRef item) {
         if (item.hasComponent(FluidContainerItemComponent.class)) {
-            logger.info("nihal111");
             EntityRef owner = item.getOwner();
             final EntityRef removedItem = inventoryManager.removeItem(owner, event.getInstigator(), item, false, 1);
             if (removedItem != null) {
@@ -121,11 +120,6 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
                 }
             }
         }
-//        ItemComponent itemComp = item.getComponent(ItemComponent.class);
-//        if (itemComp.consumedOnUse) {
-//            int slot = InventoryUtils.getSlotWithItem(event.getInstigator(), item);
-//            inventoryManager.removeItem(event.getInstigator(), event.getInstigator(), slot, true, 1);
-//        }
     }
 
     /**
