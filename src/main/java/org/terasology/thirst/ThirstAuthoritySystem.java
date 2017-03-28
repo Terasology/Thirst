@@ -98,7 +98,10 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
             thirst.lastCalculationTime = time.getGameTimeInMs();
             instigator.saveComponent(thirst);
             item.send(new DrinkConsumedEvent(event));
-            event.consume();
+
+            if (!item.exists()) {
+                event.consume();
+            }
         }
     }
 
@@ -117,6 +120,18 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
                 FluidUtils.setFluidForContainerItem(removedItem, null);
                 if (!inventoryManager.giveItem(owner, event.getInstigator(), removedItem)) {
                     removedItem.destroy();
+                }
+            }
+        } else {
+            ItemComponent itemComp = item.getComponent(ItemComponent.class);
+            if (itemComp.consumedOnUse) {
+                boolean destroyDrink = false;
+
+                if (itemComp.baseDamage != Integer.MIN_VALUE) {
+                    itemComp.baseDamage = Integer.MIN_VALUE;
+                } else {
+                    destroyDrink = true;
+                    inventoryManager.removeItem(event.getInstigator(), event.getInstigator(), item, destroyDrink, 1);
                 }
             }
         }
