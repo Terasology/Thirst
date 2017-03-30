@@ -51,6 +51,8 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     @In
     private Time time;
 
+    private boolean destroyDrink = false;
+
     /**
      * Initialize thirst attributes for a spawned player. Called when a player is spawned.
      *
@@ -99,8 +101,9 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
             instigator.saveComponent(thirst);
             item.send(new DrinkConsumedEvent(event));
 
-            if (!item.exists()) {
+            if (destroyDrink) {
                 event.consume();
+                destroyDrink = false;
             }
         }
     }
@@ -125,13 +128,13 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
         } else {
             ItemComponent itemComp = item.getComponent(ItemComponent.class);
             if (itemComp.consumedOnUse) {
-                boolean destroyDrink = false;
+                destroyDrink = false;
 
                 if (itemComp.baseDamage != Integer.MIN_VALUE) {
                     itemComp.baseDamage = Integer.MIN_VALUE;
                 } else {
                     destroyDrink = true;
-                    inventoryManager.removeItem(event.getInstigator(), event.getInstigator(), item, destroyDrink, 1);
+                    itemComp.baseDamage = 1;
                 }
             }
         }
