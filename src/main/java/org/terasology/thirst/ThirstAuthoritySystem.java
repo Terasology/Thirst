@@ -135,6 +135,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
                 } else {
                     destroyDrink = true;
                     itemComp.baseDamage = 1;
+                    inventoryManager.removeItem(event.getInstigator(), event.getInstigator(), item, true, 1);
                 }
             }
         }
