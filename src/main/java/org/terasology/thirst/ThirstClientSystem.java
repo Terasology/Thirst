@@ -59,7 +59,7 @@ public class ThirstClientSystem extends BaseComponentSystem {
      * @param client The entity who is checking it's thirst level.
      * @return Returns a message for the client informing them about their water level if they have one.
      */
-    @Command(shortDescription = "Checks your thirst/water level.", runOnServer = true, requiredPermission = PermissionManager.DEBUG_PERMISSION)
+    @Command(shortDescription = "Checks your thirst/water level.", runOnServer = true, requiredPermission = PermissionManager.CHEAT_PERMISSION)
     public String thirstCheck(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         if (character.hasComponent(ThirstComponent.class)) {
