@@ -93,21 +93,6 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     }
 
     /**
-     * Updates the thirst component of an entity one last time before it is removed. Called when the entity is being
-     * removed.
-     *
-     * @param event  the event corresponding to the removal of an entity
-     * @param entity the entity being removed
-     * @param thirst the thirst component associated with the entity
-     */
-    @ReceiveEvent
-    public void beforeRemoval(BeforeDeactivateComponent event, EntityRef entity, ThirstComponent thirst) {
-        thirst.lastCalculatedWater = ThirstUtils.getThirstForEntity(entity);
-        thirst.lastCalculationTime = time.getGameTimeInMs();
-        entity.saveComponent(thirst);
-    }
-
-    /**
      * Applies the drink's filling attribute to the instigator of the ActionEvent (the entity consuming the drink).
      *
      * @param event the event corresponding to the interaction with the drink
