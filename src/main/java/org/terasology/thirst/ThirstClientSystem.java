@@ -36,10 +36,14 @@ import org.terasology.thirst.component.ThirstComponent;
  */
 @RegisterSystem(RegisterMode.CLIENT)
 public class ThirstClientSystem extends BaseComponentSystem {
-    /** The logger for debugging to the log files. */
+    /**
+     * The logger for debugging to the log files.
+     */
     private static final Logger logger = LoggerFactory.getLogger(ThirstAuthoritySystem.class);
 
-    /** An instance of the UI manager */
+    /**
+     * An instance of the UI manager
+     */
     @In
     private NUIManager nuiManager;
 
@@ -56,6 +60,7 @@ public class ThirstClientSystem extends BaseComponentSystem {
 
     /**
      * A command for testing the thirst level for an entity.
+     *
      * @param client The entity who is checking it's thirst level.
      * @return Returns a message for the client informing them about their water level if they have one.
      */
@@ -72,8 +77,9 @@ public class ThirstClientSystem extends BaseComponentSystem {
 
     /**
      * A command for modifying your thirst level.
+     *
      * @param newWater The new thirst level for the client. This has to be above 0 and below the max water capacity.
-     * @param client The client which is changing it's thirst level.
+     * @param client   The client which is changing it's thirst level.
      * @return Returns a message for the client telling him about their new thirst level if they have one.
      */
     @Command(shortDescription = "Sets your current thirst level.", runOnServer = true, requiredPermission = PermissionManager.CHEAT_PERMISSION)
@@ -103,6 +109,7 @@ public class ThirstClientSystem extends BaseComponentSystem {
 
     /**
      * A command for changing your maximum water level.
+     *
      * @param newMax The new maximum water level. Has to be above 0.
      * @param client The client which is changing it's water level.
      * @return Returns a message for the client telling him whether the command was successful.

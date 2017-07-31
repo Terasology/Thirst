@@ -32,6 +32,7 @@ import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.common.ActivateEvent;
 import org.terasology.logic.inventory.InventoryManager;
 import org.terasology.logic.inventory.ItemComponent;
+import org.terasology.logic.players.event.OnPlayerRespawnedEvent;
 import org.terasology.logic.players.event.OnPlayerSpawnedEvent;
 import org.terasology.registry.In;
 import org.terasology.thirst.component.DrinkComponent;
@@ -63,6 +64,24 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     @ReceiveEvent
     public void onPlayerSpawn(OnPlayerSpawnedEvent event, EntityRef player,
                               ThirstComponent thirst) {
+        resetThirst(player, thirst);
+    }
+
+    /**
+     * Initialize thirst attributes for a respawned player. Called when a player is respawned.
+     *
+     * @param event  the event corresponding to the respawning of the player
+     * @param player a reference to the player entity
+     * @param thirst the player's thirst component (to be initialized)
+     */
+    @ReceiveEvent
+    public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef player,
+                                ThirstComponent thirst) {
+        logger.info("mark");
+        resetThirst(player, thirst);
+    }
+
+    private void resetThirst(EntityRef player, ThirstComponent thirst) {
         thirst.lastCalculatedWater = thirst.maxWaterCapacity;
         thirst.lastCalculationTime = time.getGameTimeInMs();
         player.saveComponent(thirst);
@@ -148,7 +167,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
      * @param character the character that has moved
      * @param thirst    the thirst component associated with the character
      */
-    @ReceiveEvent
+    @ReceiveEvent(components = {ThirstComponent.class})
     public void characterMoved(CharacterMoveInputEvent event, EntityRef character, ThirstComponent thirst) {
         final float expectedDecay = event.isRunning() ? thirst.sprintDecayPerSecond : thirst.normalDecayPerSecond;
         if (expectedDecay != thirst.waterDecayPerSecond) {
