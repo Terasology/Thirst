@@ -76,7 +76,6 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     @ReceiveEvent
     public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef player,
                                 ThirstComponent thirst) {
-        logger.info("mark");
         resetThirst(player, thirst);
     }
 
