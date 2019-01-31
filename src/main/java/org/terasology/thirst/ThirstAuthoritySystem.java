@@ -25,10 +25,15 @@ import org.terasology.entitySystem.event.ReceiveEvent;
 import org.terasology.entitySystem.systems.BaseComponentSystem;
 import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
+import org.terasology.entitySystem.prefab.Prefab;
+import org.terasology.entitySystem.prefab.PrefabManager;
+import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.fluid.component.FluidContainerItemComponent;
 import org.terasology.fluid.system.FluidUtils;
+import org.terasology.logic.characters.AliveCharacterComponent;
 import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.common.ActivateEvent;
+import org.terasology.logic.health.DoDamageEvent;
 import org.terasology.logic.inventory.InventoryManager;
 import org.terasology.logic.inventory.ItemComponent;
 import org.terasology.logic.players.event.OnPlayerRespawnedEvent;
@@ -42,17 +47,42 @@ import org.terasology.thirst.event.DrinkConsumedEvent;
  * This authority system handles drink consumption by various entities.
  */
 @RegisterSystem(value = RegisterMode.AUTHORITY)
-public class ThirstAuthoritySystem extends BaseComponentSystem {
+public class ThirstAuthoritySystem extends BaseComponentSystem implements UpdateSubscriberSystem {
     private static final Logger logger = LoggerFactory.getLogger(ThirstAuthoritySystem.class);
     @In
     private EntityManager entityManager;
     @In
     private InventoryManager inventoryManager;
     @In
+    private PrefabManager prefabManager;
+    @In
     private Time time;
 
     private boolean destroyDrink = false;
 
+    /**
+     * Checks the ThirstComponent for all entities and triggers DamageEvents if their thirst level is below the threshold.
+     *
+     * @param delta - Unused parameter.
+     */
+    @Override
+    public void update(float delta) {
+        long gameTime = time.getGameTimeInMs();
+        for (EntityRef entity : entityManager.getEntitiesWith(ThirstComponent.class, AliveCharacterComponent.class)) {
+            ThirstComponent thirst = entity.getComponent(ThirstComponent.class);
+
+            // Check to see if health should be decreased
+            if (ThirstUtils.getThirstForEntity(entity) < thirst.healthLossThreshold) {
+                if (gameTime >= thirst.nextHealthDecreaseTick) {
+                    Prefab thirstDamagePrefab = prefabManager.getPrefab("thirst:thirstDamage");
+                    entity.send(new DoDamageEvent(thirst.healthDecreaseAmount, thirstDamagePrefab));
+                    thirst.nextHealthDecreaseTick = gameTime + thirst.healthDecreaseInterval;
+                    entity.saveComponent(thirst);
+                }
+            }
+        }
+    }
+    
     /**
      * Initialize thirst attributes for a spawned player. Called when a player is spawned.
      *

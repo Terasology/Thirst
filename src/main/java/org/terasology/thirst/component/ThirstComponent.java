@@ -53,4 +53,31 @@ public class ThirstComponent implements Component {
     /** The water capacity below which sprinting is disabled */
     @Replicate
     public float sprintLossThreshold = 50;
+
+    //Health loss settings
+    /**
+     * The entity will begin to lose health if their thirst capacity is < this threshold. Set to 0, if you do not want
+     * the entity to lose health.
+     */
+    @Replicate
+    public float healthLossThreshold = 1;
+
+    /**
+     * The amount of health decreased at every healthDecreaseInterval(below)
+     */
+    @Replicate
+    public int healthDecreaseAmount = 15;
+
+    /**
+     * The interval (in milliseconds) at which healthDecreaseAmount (above) is applied to the component
+     */
+    @Replicate
+    public int healthDecreaseInterval = 30000;
+
+    /**
+     * The next tick where an entity's health has to be decreased due to a too low thirst level.
+     */
+    @Replicate
+    public long nextHealthDecreaseTick;
+
 }
