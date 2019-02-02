@@ -73,11 +73,4 @@ public class ThirstComponent implements Component {
      */
     @Replicate
     public int healthDecreaseInterval = 30000;
-
-    /**
-     * The next tick where an entity's health has to be decreased due to a too low thirst level.
-     */
-    @Replicate
-    public long nextHealthDecreaseTick;
-
 }
