@@ -63,14 +63,9 @@ public class ThirstComponent implements Component {
     public float healthLossThreshold = 1;
 
     /**
-     * The amount of health decreased at every healthDecreaseInterval(below)
+     * The amount of health decreased at every healthDecreaseInterval
      */
     @Replicate
     public int healthDecreaseAmount = 15;
 
-    /**
-     * The interval (in milliseconds) at which healthDecreaseAmount (above) is applied to the component
-     */
-    @Replicate
-    public int healthDecreaseInterval = 30000;
 }
