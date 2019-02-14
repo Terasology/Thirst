@@ -27,7 +27,6 @@ import org.terasology.entitySystem.systems.RegisterMode;
 import org.terasology.entitySystem.systems.RegisterSystem;
 import org.terasology.entitySystem.prefab.Prefab;
 import org.terasology.entitySystem.prefab.PrefabManager;
-import org.terasology.entitySystem.systems.UpdateSubscriberSystem;
 import org.terasology.fluid.component.FluidContainerItemComponent;
 import org.terasology.fluid.system.FluidUtils;
 import org.terasology.logic.characters.AliveCharacterComponent;
@@ -50,7 +49,7 @@ import org.terasology.thirst.event.DrinkConsumedEvent;
  * This authority system handles drink consumption by various entities.
  */
 @RegisterSystem(value = RegisterMode.AUTHORITY)
-public class ThirstAuthoritySystem extends BaseComponentSystem implements UpdateSubscriberSystem {
+public class ThirstAuthoritySystem extends BaseComponentSystem{
     private static final Logger logger = LoggerFactory.getLogger(ThirstAuthoritySystem.class);
     @In
     private EntityManager entityManager;
@@ -66,46 +65,29 @@ public class ThirstAuthoritySystem extends BaseComponentSystem implements Update
     private boolean destroyDrink = false;
     private static long lastTick = 0;
     /**
-     * The interval (in milliseconds) at which healthDecreaseAmount (thirstComponenent) is applied to the component.
+     * The interval (in milliseconds) at which healthDecreaseAmount (thirstComponent) is applied to the component.
      */
     private int healthDecreaseInterval = 30000;
     public static final String THIRST_DAMAGE_ACTION_ID = "Thirst Damage";
 
     /**
-     * Checks the ThirstComponent for all entities and triggers DamageEvents if their thirst level is below the threshold.
-     *
-     * @param delta - Unused parameter.
+     * Deals a unit of thirst damage to the character.
      */
-    @Override
-    public void update(float delta) {
-        long gameTime = time.getGameTimeInMs();
-        if (gameTime > lastTick) {
-            lastTick = gameTime + healthDecreaseInterval;
+    @ReceiveEvent
+    public void onPeriodicActionTriggered(PeriodicActionTriggeredEvent event, EntityRef entity_unused) {
+        if (event.getActionId().equals(THIRST_DAMAGE_ACTION_ID)) {
             for (EntityRef entity : entityManager.getEntitiesWith(ThirstComponent.class, AliveCharacterComponent.class)) {
                 ThirstComponent thirst = entity.getComponent(ThirstComponent.class);
 
                 // Check to see if health should be decreased
                 if ((ThirstUtils.getThirstForEntity(entity) < thirst.healthLossThreshold)) {
-                    if (!(delayManager.hasPeriodicAction(entity, THIRST_DAMAGE_ACTION_ID)))
-                        delayManager.addPeriodicAction(entity, THIRST_DAMAGE_ACTION_ID, 0, healthDecreaseInterval);
-                } else {
-                    if (delayManager.hasPeriodicAction(entity, THIRST_DAMAGE_ACTION_ID)) {
-                        delayManager.cancelPeriodicAction(entity, THIRST_DAMAGE_ACTION_ID);
-                    }
+                    Prefab thirstDamagePrefab = prefabManager.getPrefab("thirst:thirstDamage");
+                    entity.send(new DoDamageEvent(thirst.healthDecreaseAmount, thirstDamagePrefab));
+                    entity.saveComponent(thirst);
+                    logger.info("onPeriodicActionTriggered method called for character");
                 }
             }
         }
-    }
-
-    /**
-     * Deals a unit of thirst damage to the character.
-     */
-    @ReceiveEvent
-    public void onPeriodicActionTriggered(PeriodicActionTriggeredEvent event, EntityRef entity) {
-        ThirstComponent thirst = entity.getComponent(ThirstComponent.class);
-        Prefab thirstDamagePrefab = prefabManager.getPrefab("thirst:thirstDamage");
-        entity.send(new DoDamageEvent(thirst.healthDecreaseAmount, thirstDamagePrefab));
-        entity.saveComponent(thirst);
     }
 
     /**
@@ -135,6 +117,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem implements Update
     public void onPlayerSpawn(OnPlayerSpawnedEvent event, EntityRef player,
                               ThirstComponent thirst) {
         resetThirst(player, thirst);
+        delayManager.addPeriodicAction(player, THIRST_DAMAGE_ACTION_ID, 0, healthDecreaseInterval);
     }
 
     /**
@@ -148,6 +131,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem implements Update
     public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef player,
                                 ThirstComponent thirst) {
         resetThirst(player, thirst);
+        delayManager.addPeriodicAction(player, THIRST_DAMAGE_ACTION_ID, 0, healthDecreaseInterval);
     }
 
     private void resetThirst(EntityRef player, ThirstComponent thirst) {
@@ -173,11 +157,6 @@ public class ThirstAuthoritySystem extends BaseComponentSystem implements Update
             thirst.lastCalculationTime = time.getGameTimeInMs();
             instigator.saveComponent(thirst);
             item.send(new DrinkConsumedEvent(event));
-
-            if ((ThirstUtils.getThirstForEntity(instigator) > thirst.healthLossThreshold) &&
-                    delayManager.hasPeriodicAction(instigator, THIRST_DAMAGE_ACTION_ID)) {
-                    delayManager.cancelPeriodicAction(instigator, THIRST_DAMAGE_ACTION_ID);
-            }
 
             if (destroyDrink) {
                 event.consume();
