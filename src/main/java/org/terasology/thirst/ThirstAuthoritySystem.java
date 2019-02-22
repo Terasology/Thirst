@@ -63,11 +63,11 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
     private DelayManager delayManager;
 
     private boolean destroyDrink = false;
-    private static long lastTick = 0;
+
     /**
      * The interval (in milliseconds) at which healthDecreaseAmount (thirstComponent) is applied to the component.
      */
-    private int healthDecreaseInterval = 30000;
+    private int healthDecreaseInterval = 60000;
     public static final String THIRST_DAMAGE_ACTION_ID = "Thirst Damage";
 
     /**
@@ -84,7 +84,6 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
                     Prefab thirstDamagePrefab = prefabManager.getPrefab("thirst:thirstDamage");
                     entity.send(new DoDamageEvent(thirst.healthDecreaseAmount, thirstDamagePrefab));
                     entity.saveComponent(thirst);
-                    logger.info("onPeriodicActionTriggered method called for character");
                 }
             }
         }

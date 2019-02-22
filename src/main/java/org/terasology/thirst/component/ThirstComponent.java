@@ -66,6 +66,6 @@ public class ThirstComponent implements Component {
      * The amount of health decreased at every healthDecreaseInterval
      */
     @Replicate
-    public int healthDecreaseAmount = 15;
+    public int healthDecreaseAmount = 5;
 
 }
