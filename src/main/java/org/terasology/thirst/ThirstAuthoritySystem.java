@@ -44,6 +44,7 @@ import org.terasology.registry.In;
 import org.terasology.thirst.component.DrinkComponent;
 import org.terasology.thirst.component.ThirstComponent;
 import org.terasology.thirst.event.DrinkConsumedEvent;
+import org.terasology.world.WorldComponent;
 
 /**
  * This authority system handles drink consumption by various entities.
@@ -69,6 +70,12 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
      */
     private int healthDecreaseInterval = 60000;
     public static final String THIRST_DAMAGE_ACTION_ID = "Thirst Damage";
+
+    public void postBegin(){
+        for(EntityRef entity : entityManager.getEntitiesWith(WorldComponent.class)){
+            delayManager.addPeriodicAction(entity, THIRST_DAMAGE_ACTION_ID, 0, healthDecreaseInterval);
+        }
+    }
 
     /**
      * Deals a unit of thirst damage to the character.
@@ -116,7 +123,6 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
     public void onPlayerSpawn(OnPlayerSpawnedEvent event, EntityRef player,
                               ThirstComponent thirst) {
         resetThirst(player, thirst);
-        delayManager.addPeriodicAction(player, THIRST_DAMAGE_ACTION_ID, 0, healthDecreaseInterval);
     }
 
     /**
@@ -130,7 +136,6 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
     public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef player,
                                 ThirstComponent thirst) {
         resetThirst(player, thirst);
-        delayManager.addPeriodicAction(player, THIRST_DAMAGE_ACTION_ID, 0, healthDecreaseInterval);
     }
 
     private void resetThirst(EntityRef player, ThirstComponent thirst) {
