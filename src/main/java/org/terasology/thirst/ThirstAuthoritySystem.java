@@ -78,7 +78,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
                 delayManager.addPeriodicAction(entity, THIRST_DAMAGE_ACTION_ID, 0, healthDecreaseInterval);
                 processedOnce = true;
             }
-            else{
+            else {
                 logger.warn("More than one entity with WorldComponent found");
             }
         }
