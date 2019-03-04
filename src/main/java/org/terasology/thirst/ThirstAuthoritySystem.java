@@ -72,8 +72,15 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
     public static final String THIRST_DAMAGE_ACTION_ID = "Thirst Damage";
 
     public void postBegin(){
-        for(EntityRef entity : entityManager.getEntitiesWith(WorldComponent.class)){
-            delayManager.addPeriodicAction(entity, THIRST_DAMAGE_ACTION_ID, 0, healthDecreaseInterval);
+        boolean processedOnce = false;
+        for(EntityRef entity : entityManager.getEntitiesWith(WorldComponent.class)) {
+            if (!processedOnce) {
+                delayManager.addPeriodicAction(entity, THIRST_DAMAGE_ACTION_ID, 0, healthDecreaseInterval);
+                processedOnce = true;
+            }
+            else{
+                logger.warn("More than one entity with WorldComponent found");
+            }
         }
     }
 
