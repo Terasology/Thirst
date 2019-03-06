@@ -1,5 +1,5 @@
 /*
- * Copyright 2017 MovingBlocks
+ * Copyright 2019 MovingBlocks
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,8 +50,11 @@ import org.terasology.world.WorldComponent;
  * This authority system handles drink consumption by various entities.
  */
 @RegisterSystem(value = RegisterMode.AUTHORITY)
-public class ThirstAuthoritySystem extends BaseComponentSystem{
+public class ThirstAuthoritySystem extends BaseComponentSystem {
+    public static final String THIRST_DAMAGE_ACTION_ID = "Thirst Damage";
+
     private static final Logger logger = LoggerFactory.getLogger(ThirstAuthoritySystem.class);
+
     @In
     private EntityManager entityManager;
     @In
@@ -63,22 +66,20 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
     @In
     private DelayManager delayManager;
 
-    private boolean destroyDrink = false;
+    private boolean destroyDrink;
 
     /**
      * The interval (in milliseconds) at which healthDecreaseAmount (thirstComponent) is applied to the component.
      */
     private int healthDecreaseInterval = 60000;
-    public static final String THIRST_DAMAGE_ACTION_ID = "Thirst Damage";
 
-    public void postBegin(){
+    public void postBegin() {
         boolean processedOnce = false;
-        for(EntityRef entity : entityManager.getEntitiesWith(WorldComponent.class)) {
+        for (EntityRef entity : entityManager.getEntitiesWith(WorldComponent.class)) {
             if (!processedOnce) {
                 delayManager.addPeriodicAction(entity, THIRST_DAMAGE_ACTION_ID, 0, healthDecreaseInterval);
                 processedOnce = true;
-            }
-            else {
+            } else {
                 logger.warn("More than one entity with WorldComponent found");
             }
         }
@@ -88,7 +89,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
      * Deals a unit of thirst damage to the character.
      */
     @ReceiveEvent
-    public void onPeriodicActionTriggered(PeriodicActionTriggeredEvent event, EntityRef entity_unused) {
+    public void onPeriodicActionTriggered(PeriodicActionTriggeredEvent event, EntityRef unusedEntity) {
         if (event.getActionId().equals(THIRST_DAMAGE_ACTION_ID)) {
             for (EntityRef entity : entityManager.getEntitiesWith(ThirstComponent.class, AliveCharacterComponent.class)) {
                 ThirstComponent thirst = entity.getComponent(ThirstComponent.class);
@@ -111,8 +112,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
      * @param thirst The ThirstComponent object, containing settings for Thirst.
      */
     @ReceiveEvent
-    public void onHealthRegen(BeforeHealEvent event, EntityRef entity,
-                              ThirstComponent thirst) {
+    public void onHealthRegen(BeforeHealEvent event, EntityRef entity, ThirstComponent thirst) {
         if (event.getInstigator() == entity
                 && ThirstUtils.getThirstForEntity(entity) < thirst.healthLossThreshold) {
             event.consume();
@@ -127,8 +127,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
      * @param thirst the player's thirst component (to be initialized)
      */
     @ReceiveEvent
-    public void onPlayerSpawn(OnPlayerSpawnedEvent event, EntityRef player,
-                              ThirstComponent thirst) {
+    public void onPlayerSpawn(OnPlayerSpawnedEvent event, EntityRef player, ThirstComponent thirst) {
         resetThirst(player, thirst);
     }
 
@@ -140,8 +139,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem{
      * @param thirst the player's thirst component (to be initialized)
      */
     @ReceiveEvent
-    public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef player,
-                                ThirstComponent thirst) {
+    public void onPlayerRespawn(OnPlayerRespawnedEvent event, EntityRef player, ThirstComponent thirst) {
         resetThirst(player, thirst);
     }
 
