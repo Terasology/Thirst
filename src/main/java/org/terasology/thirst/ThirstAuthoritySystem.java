@@ -34,8 +34,9 @@ import org.terasology.logic.characters.CharacterMoveInputEvent;
 import org.terasology.logic.common.ActivateEvent;
 import org.terasology.logic.delay.DelayManager;
 import org.terasology.logic.delay.PeriodicActionTriggeredEvent;
-import org.terasology.logic.health.BeforeHealEvent;
-import org.terasology.logic.health.DoDamageEvent;
+import org.terasology.logic.health.event.ActivateRegenEvent;
+import org.terasology.logic.health.event.DeactivateRegenEvent;
+import org.terasology.logic.health.event.DoDamageEvent;
 import org.terasology.logic.inventory.InventoryManager;
 import org.terasology.logic.inventory.ItemComponent;
 import org.terasology.logic.players.event.OnPlayerRespawnedEvent;
@@ -45,6 +46,8 @@ import org.terasology.thirst.component.DrinkComponent;
 import org.terasology.thirst.component.ThirstComponent;
 import org.terasology.thirst.event.DrinkConsumedEvent;
 import org.terasology.world.WorldComponent;
+
+import static org.terasology.logic.health.RegenAuthoritySystem.BASE_REGEN;
 
 /**
  * This authority system handles drink consumption by various entities.
@@ -93,6 +96,10 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
         if (event.getActionId().equals(THIRST_DAMAGE_ACTION_ID)) {
             for (EntityRef entity : entityManager.getEntitiesWith(ThirstComponent.class, AliveCharacterComponent.class)) {
                 ThirstComponent thirst = entity.getComponent(ThirstComponent.class);
+                thirst.lastCalculatedWater = Math.max(0,
+                        thirst.lastCalculatedWater - (healthDecreaseInterval * thirst.waterDecayPerSecond) / 1000);
+                thirst.lastCalculationTime = time.getGameTimeInMs();
+                entity.saveComponent(thirst);
 
                 // Check to see if health should be decreased
                 if ((ThirstUtils.getThirstForEntity(entity) < thirst.healthLossThreshold)) {
@@ -105,17 +112,16 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     }
 
     /**
-     * Cancels the BeforeHealEvent for an entity if their thirst level is lower than the healthLossThreshold.
+     * Cancels natural regeneration for an entity if its thirst level is lower than the healthLossThreshold.
      *
-     * @param event  The BeforeHealEvent, called before an entity is about to be healed.
-     * @param entity The entity which is being healed.
+     * @param event  The ActivateRegenEvent, called before an entity is about to be regenerated.
+     * @param entity The entity which is being regenerated.
      * @param thirst The ThirstComponent object, containing settings for Thirst.
      */
     @ReceiveEvent
-    public void onHealthRegen(BeforeHealEvent event, EntityRef entity, ThirstComponent thirst) {
-        if (event.getInstigator() == entity
-                && ThirstUtils.getThirstForEntity(entity) < thirst.healthLossThreshold) {
-            event.consume();
+    public void onHealthRegen(ActivateRegenEvent event, EntityRef entity, ThirstComponent thirst) {
+        if (ThirstUtils.getThirstForEntity(entity) < thirst.healthLossThreshold && event.id.equals(BASE_REGEN)) {
+            entity.send(new DeactivateRegenEvent());
         }
     }
 
