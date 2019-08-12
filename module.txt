@@ -7,6 +7,9 @@
          {
              "id" : "Fluid",
              "minVersion" : "1.0.0"
+         }, {
+            "id": "Health",
+            "minVersion": "0.1.0"
          }
      ],
     "description" : "This module introduces Thirst and various related effects."
