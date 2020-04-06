@@ -172,7 +172,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
             thirst.lastCalculationTime = time.getGameTimeInMs();
             instigator.saveComponent(thirst);
             item.send(new DrinkConsumedEvent(event));
-
+            item.removeComponent(DrinkComponent.class);
             if (destroyDrink) {
                 event.consume();
                 destroyDrink = false;
