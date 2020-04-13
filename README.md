@@ -11,5 +11,5 @@ The player's thirst saturation decreases as time in the world progresses, but re
 
 ## Commands
 * `showThirst` - Displays your current drink level
-* `setThirst <float>` - Sets your current drink level
-* `setMaxThirst` - Sets your maximum drink level
+* `setThirst <float>` - Sets your current drink level to the given value
+* `setMaxThirst <float>` - Sets your maximum drink level to the given value

@@ -60,7 +60,7 @@ public class ThirstCommands extends BaseComponentSystem {
      * @return Returns a message for the client telling him about their new thirst level if they have one.
      */
     @Command(shortDescription = "Sets your current thirst level.", runOnServer = true, requiredPermission = PermissionManager.CHEAT_PERMISSION)
-    public String setThirst(@CommandParam(value = "WaterLevel") float newWater, @Sender EntityRef client) {
+    public String setThirst(@Sender EntityRef client, @CommandParam(value = "WaterLevel") float newWater) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         if (!character.hasComponent(ThirstComponent.class)) {
             return "You don't have a thirst level.";
@@ -92,7 +92,7 @@ public class ThirstCommands extends BaseComponentSystem {
      * @return Returns a message for the client telling him whether the command was successful.
      */
     @Command(shortDescription = "Sets your max water level.", runOnServer = true, requiredPermission = PermissionManager.CHEAT_PERMISSION)
-    public String setMaxThirst(@CommandParam(value = "MaxWaterLevel") float newMax, @Sender EntityRef client) {
+    public String setMaxThirst(@Sender EntityRef client, @CommandParam(value = "MaxWaterLevel") float newMax) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         if (!character.hasComponent(ThirstComponent.class)) {
             return "You don't have a thirst level.";
