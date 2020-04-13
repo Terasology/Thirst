@@ -25,9 +25,11 @@ import org.terasology.logic.console.commandSystem.annotations.Sender;
 import org.terasology.logic.permission.PermissionManager;
 import org.terasology.network.ClientComponent;
 import org.terasology.registry.In;
+import org.terasology.registry.Share;
 import org.terasology.thirst.component.ThirstComponent;
 
 @RegisterSystem
+@Share(ThirstCommands.class)
 public class ThirstCommands extends BaseComponentSystem {
 
     @In
@@ -40,7 +42,7 @@ public class ThirstCommands extends BaseComponentSystem {
      * @return Returns a message for the client informing them about their water level if they have one.
      */
     @Command(shortDescription = "Checks your thirst/water level.", runOnServer = true, requiredPermission = PermissionManager.CHEAT_PERMISSION)
-    public String thirstCheck(@Sender EntityRef client) {
+    public String showThirst(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         if (character.hasComponent(ThirstComponent.class)) {
             ThirstComponent thirst = character.getComponent(ThirstComponent.class);
@@ -58,7 +60,7 @@ public class ThirstCommands extends BaseComponentSystem {
      * @return Returns a message for the client telling him about their new thirst level if they have one.
      */
     @Command(shortDescription = "Sets your current thirst level.", runOnServer = true, requiredPermission = PermissionManager.CHEAT_PERMISSION)
-    public String thirstSet(@CommandParam(value = "WaterLevel") float newWater, @Sender EntityRef client) {
+    public String setThirst(@Sender EntityRef client, @CommandParam(value = "WaterLevel") float newWater) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         if (!character.hasComponent(ThirstComponent.class)) {
             return "You don't have a thirst level.";
@@ -90,7 +92,7 @@ public class ThirstCommands extends BaseComponentSystem {
      * @return Returns a message for the client telling him whether the command was successful.
      */
     @Command(shortDescription = "Sets your max water level.", runOnServer = true, requiredPermission = PermissionManager.CHEAT_PERMISSION)
-    public String thirstSetMax(@CommandParam(value = "MaxWaterLevel") float newMax, @Sender EntityRef client) {
+    public String setMaxThirst(@Sender EntityRef client, @CommandParam(value = "MaxWaterLevel") float newMax) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         if (!character.hasComponent(ThirstComponent.class)) {
             return "You don't have a thirst level.";
