@@ -162,7 +162,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
      * @param item  the item that the player is drinking
      * @param drink the drink component associated with the item being consumed
      */
-    @ReceiveEvent
+    @ReceiveEvent(priority= EventPriority.PRIORITY_LOW)
     public void drinkConsumed(ActivateEvent event, EntityRef item, DrinkComponent drink) {
         float filling = drink.filling;
         EntityRef instigator = event.getInstigator();
