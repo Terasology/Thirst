@@ -5,7 +5,7 @@
     "displayName": "Thirst and Drink",
     "description": "This module introduces Thirst and various related effects.",
     "dependencies": [
-        { "id": "Fluid", "minVersion": "1.0.0" },
+        { "id": "Fluid", "minVersion": "1.1.0" },
         { "id": "Health", "minVersion": "1.0.0" }
     ],
     "isLibrary": true,
