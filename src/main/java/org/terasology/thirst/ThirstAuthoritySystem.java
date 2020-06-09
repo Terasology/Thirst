@@ -44,6 +44,7 @@ import org.terasology.logic.players.event.OnPlayerSpawnedEvent;
 import org.terasology.registry.In;
 import org.terasology.thirst.component.DrinkComponent;
 import org.terasology.thirst.component.ThirstComponent;
+import org.terasology.thirst.event.AffectThirstEvent;
 import org.terasology.thirst.event.DrinkConsumedEvent;
 import org.terasology.world.WorldComponent;
 
@@ -227,7 +228,10 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
             // Recalculate current thirst and apply new decay
             thirst.lastCalculatedWater = ThirstUtils.getThirstForEntity(character);
             thirst.lastCalculationTime = time.getGameTimeInMs();
-            thirst.waterDecayPerSecond = expectedDecay;
+            // Send event to allow for other systems to modify thirst decay.
+            AffectThirstEvent affectThirstEvent = new AffectThirstEvent(expectedDecay);
+            character.send(affectThirstEvent);
+            thirst.waterDecayPerSecond = affectThirstEvent.getResultValue();
             character.saveComponent(thirst);
         }
     }
