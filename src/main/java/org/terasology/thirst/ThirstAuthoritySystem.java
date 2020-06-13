@@ -225,6 +225,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     @ReceiveEvent(components = {ThirstComponent.class})
     public void characterMoved(CharacterMoveInputEvent event, EntityRef character, ThirstComponent thirst) {
         expectedDecay = event.isRunning() ? thirst.sprintDecayPerSecond : thirst.normalDecayPerSecond;
+        // Send event to allow for other systems to modify thirst decay.
         AffectThirstEvent affectThirstEvent = new AffectThirstEvent(expectedDecay);
         character.send(affectThirstEvent);
         expectedDecay = affectThirstEvent.getResultValue();
@@ -232,7 +233,6 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
             // Recalculate current thirst and apply new decay
             thirst.lastCalculatedWater = ThirstUtils.getThirstForEntity(character);
             thirst.lastCalculationTime = time.getGameTimeInMs();
-            // Send event to allow for other systems to modify thirst decay.
             thirst.waterDecayPerSecond = expectedDecay;
             character.saveComponent(thirst);
         }
