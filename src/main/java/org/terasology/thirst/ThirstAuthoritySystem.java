@@ -71,7 +71,6 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     private DelayManager delayManager;
 
     private boolean destroyDrink;
-    private float expectedDecay;
 
     /**
      * The interval (in milliseconds) at which healthDecreaseAmount (thirstComponent) is applied to the component.
@@ -224,7 +223,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
      */
     @ReceiveEvent(components = {ThirstComponent.class})
     public void characterMoved(CharacterMoveInputEvent event, EntityRef character, ThirstComponent thirst) {
-        expectedDecay = event.isRunning() ? thirst.sprintDecayPerSecond : thirst.normalDecayPerSecond;
+        float expectedDecay = event.isRunning() ? thirst.sprintDecayPerSecond : thirst.normalDecayPerSecond;
         // Send event to allow for other systems to modify thirst decay.
         AffectThirstEvent affectThirstEvent = new AffectThirstEvent(expectedDecay);
         character.send(affectThirstEvent);
