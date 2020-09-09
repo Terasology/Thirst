@@ -2,18 +2,19 @@
 // SPDX-License-Identifier: Apache-2.0
 package org.terasology.thirst.ui;
 
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.logic.players.LocalPlayer;
-import org.terasology.registry.CoreRegistry;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.logic.players.LocalPlayer;
+import org.terasology.engine.registry.CoreRegistry;
+import org.terasology.engine.rendering.nui.layers.hud.CoreHudWidget;
 import org.terasology.nui.databinding.Binding;
 import org.terasology.nui.databinding.ReadOnlyBinding;
-import org.terasology.rendering.nui.layers.hud.CoreHudWidget;
 import org.terasology.nui.widgets.UILoadBar;
 import org.terasology.thirst.ThirstUtils;
 import org.terasology.thirst.component.ThirstComponent;
 
 /**
  * This HUD widget will display information relating to the player's thirst, specifically, how thirsty the player is.
+ *
  * @author Marcin Sciesinski <marcins78@gmail.com>
  */
 public class ThirstWindow extends CoreHudWidget {

@@ -1,31 +1,18 @@
-/*
- * Copyright 2017 MovingBlocks
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+// Copyright 2020 The Terasology Foundation
+// SPDX-License-Identifier: Apache-2.0
 package org.terasology.thirst;
 
-import org.terasology.engine.Time;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.systems.BaseComponentSystem;
-import org.terasology.entitySystem.systems.RegisterSystem;
-import org.terasology.logic.console.commandSystem.annotations.Command;
-import org.terasology.logic.console.commandSystem.annotations.CommandParam;
-import org.terasology.logic.console.commandSystem.annotations.Sender;
-import org.terasology.logic.permission.PermissionManager;
-import org.terasology.network.ClientComponent;
-import org.terasology.registry.In;
-import org.terasology.registry.Share;
+import org.terasology.engine.core.Time;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
+import org.terasology.engine.entitySystem.systems.RegisterSystem;
+import org.terasology.engine.logic.console.commandSystem.annotations.Command;
+import org.terasology.engine.logic.console.commandSystem.annotations.CommandParam;
+import org.terasology.engine.logic.console.commandSystem.annotations.Sender;
+import org.terasology.engine.logic.permission.PermissionManager;
+import org.terasology.engine.network.ClientComponent;
+import org.terasology.engine.registry.In;
+import org.terasology.engine.registry.Share;
 import org.terasology.thirst.component.ThirstComponent;
 
 @RegisterSystem
@@ -41,7 +28,8 @@ public class ThirstCommands extends BaseComponentSystem {
      * @param client The entity who is checking it's thirst level.
      * @return Returns a message for the client informing them about their water level if they have one.
      */
-    @Command(shortDescription = "Checks your thirst/water level.", runOnServer = true, requiredPermission = PermissionManager.CHEAT_PERMISSION)
+    @Command(shortDescription = "Checks your thirst/water level.", runOnServer = true, requiredPermission =
+            PermissionManager.CHEAT_PERMISSION)
     public String showThirst(@Sender EntityRef client) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         if (character.hasComponent(ThirstComponent.class)) {
@@ -55,11 +43,13 @@ public class ThirstCommands extends BaseComponentSystem {
     /**
      * A command for modifying your thirst level.
      *
-     * @param newWater The new thirst level for the client. This has to be above 0 and below the max water capacity.
-     * @param client   The client which is changing it's thirst level.
+     * @param newWater The new thirst level for the client. This has to be above 0 and below the max water
+     *         capacity.
+     * @param client The client which is changing it's thirst level.
      * @return Returns a message for the client telling him about their new thirst level if they have one.
      */
-    @Command(shortDescription = "Sets your current thirst level.", runOnServer = true, requiredPermission = PermissionManager.CHEAT_PERMISSION)
+    @Command(shortDescription = "Sets your current thirst level.", runOnServer = true, requiredPermission =
+            PermissionManager.CHEAT_PERMISSION)
     public String setThirst(@Sender EntityRef client, @CommandParam(value = "WaterLevel") float newWater) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         if (!character.hasComponent(ThirstComponent.class)) {
@@ -91,7 +81,8 @@ public class ThirstCommands extends BaseComponentSystem {
      * @param client The client which is changing it's water level.
      * @return Returns a message for the client telling him whether the command was successful.
      */
-    @Command(shortDescription = "Sets your max water level.", runOnServer = true, requiredPermission = PermissionManager.CHEAT_PERMISSION)
+    @Command(shortDescription = "Sets your max water level.", runOnServer = true, requiredPermission =
+            PermissionManager.CHEAT_PERMISSION)
     public String setMaxThirst(@Sender EntityRef client, @CommandParam(value = "MaxWaterLevel") float newMax) {
         EntityRef character = client.getComponent(ClientComponent.class).character;
         if (!character.hasComponent(ThirstComponent.class)) {
