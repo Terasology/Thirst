@@ -15,9 +15,9 @@
  */
 package org.terasology.thirst.event;
 
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.entitySystem.event.Event;
-import org.terasology.logic.common.ActivateEvent;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.entitySystem.event.Event;
+import org.terasology.engine.logic.common.ActivateEvent;
 
 /** This event is sent to an entity to indicate that it has drunk a drink. */
 public class DrinkConsumedEvent implements Event {

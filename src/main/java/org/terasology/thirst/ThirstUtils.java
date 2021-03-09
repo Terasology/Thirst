@@ -15,9 +15,9 @@
  */
 package org.terasology.thirst;
 
-import org.terasology.engine.Time;
-import org.terasology.entitySystem.entity.EntityRef;
-import org.terasology.registry.CoreRegistry;
+import org.terasology.engine.core.Time;
+import org.terasology.engine.entitySystem.entity.EntityRef;
+import org.terasology.engine.registry.CoreRegistry;
 import org.terasology.thirst.component.ThirstComponent;
 
 /**

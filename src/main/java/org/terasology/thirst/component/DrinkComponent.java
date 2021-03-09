@@ -15,7 +15,7 @@
  */
 package org.terasology.thirst.component;
 
-import org.terasology.entitySystem.Component;
+import org.terasology.engine.entitySystem.Component;
 
 /**
  * A component used for storing information about a drink. Specifically, it contains a float specifying how much water
