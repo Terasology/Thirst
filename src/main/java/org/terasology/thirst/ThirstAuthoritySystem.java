@@ -35,7 +35,7 @@ import org.terasology.engine.logic.delay.PeriodicActionTriggeredEvent;
 import org.terasology.logic.health.event.ActivateRegenEvent;
 import org.terasology.logic.health.event.DeactivateRegenEvent;
 import org.terasology.logic.health.event.DoDamageEvent;
-import org.terasology.logic.inventory.InventoryManager;
+import org.terasology.module.inventory.systems.InventoryManager;
 import org.terasology.engine.logic.inventory.ItemComponent;
 import org.terasology.engine.logic.players.event.OnPlayerRespawnedEvent;
 import org.terasology.engine.logic.players.event.OnPlayerSpawnedEvent;
