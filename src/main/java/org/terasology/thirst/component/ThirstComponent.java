@@ -52,7 +52,7 @@ public class ThirstComponent implements Component {
 
     /** The water capacity below which sprinting is disabled */
     @Replicate
-    public float sprintLossThreshold = 40;
+    public float sprintLossThreshold = 50;
 
     //Health loss settings
     /**
