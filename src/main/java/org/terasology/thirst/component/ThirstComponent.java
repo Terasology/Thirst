@@ -40,11 +40,11 @@ public class ThirstComponent implements Component {
 
     /** The decay of thirst under normal movement condition */
     @Replicate
-    public float normalDecayPerSecond = 0.05f;
+    public float normalDecayPerSecond = 0.02f;
 
     /** The decay of thirst under sprint movement conditions */
     @Replicate
-    public float sprintDecayPerSecond = 0.2f;
+    public float sprintDecayPerSecond = 0.1f;
 
     /** Current decay of thirst */
     @Replicate
@@ -52,7 +52,7 @@ public class ThirstComponent implements Component {
 
     /** The water capacity below which sprinting is disabled */
     @Replicate
-    public float sprintLossThreshold = 50;
+    public float sprintLossThreshold = 40;
 
     //Health loss settings
     /**
