@@ -32,9 +32,9 @@ import org.terasology.engine.logic.characters.CharacterMoveInputEvent;
 import org.terasology.engine.logic.common.ActivateEvent;
 import org.terasology.engine.logic.delay.DelayManager;
 import org.terasology.engine.logic.delay.PeriodicActionTriggeredEvent;
-import org.terasology.logic.health.event.ActivateRegenEvent;
-import org.terasology.logic.health.event.DeactivateRegenEvent;
-import org.terasology.logic.health.event.DoDamageEvent;
+import org.terasology.module.health.events.ActivateRegenEvent;
+import org.terasology.module.health.events.DeactivateRegenEvent;
+import org.terasology.module.health.events.DoDamageEvent;
 import org.terasology.module.inventory.systems.InventoryManager;
 import org.terasology.engine.logic.inventory.ItemComponent;
 import org.terasology.engine.logic.players.event.OnPlayerRespawnedEvent;
@@ -48,7 +48,7 @@ import org.terasology.thirst.component.ThirstComponent;
 import org.terasology.thirst.event.AffectThirstEvent;
 import org.terasology.thirst.event.DrinkConsumedEvent;
 
-import static org.terasology.logic.health.RegenAuthoritySystem.BASE_REGEN;
+import static org.terasology.module.health.systems.RegenAuthoritySystem.BASE_REGEN;
 
 /**
  * This authority system handles drink consumption by various entities.

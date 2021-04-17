@@ -1,23 +1,23 @@
 {
-  "id": "Thirst",
-  "version": "1.1.0-SNAPSHOT",
-  "author": "UltimateBudgie, Marcin Sciesinski <marcins78@gmail.com>, Mandar Juvekar",
-  "displayName": "Thirst and Drink",
-  "description": "This module introduces Thirst and various related effects.",
-  "dependencies": [
-    {
-      "id": "Fluid",
-      "minVersion": "2.0.0"
-    },
-    {
-      "id": "Health",
-      "minVersion": "1.0.0"
-    },
-    {
-      "id": "Inventory",
-      "minVersion": "1.1.0"
-    }
-  ],
-  "isLibrary": true,
-  "isAugmentation": true
+    "id": "Thirst",
+    "version": "1.1.0-SNAPSHOT",
+    "author": "UltimateBudgie, Marcin Sciesinski <marcins78@gmail.com>, Mandar Juvekar",
+    "displayName": "Thirst and Drink",
+    "description": "This module introduces Thirst and various related effects.",
+    "dependencies": [
+        {
+            "id": "Fluid",
+            "minVersion": "2.0.0"
+        },
+        {
+            "id": "Health",
+            "minVersion": "2.0.0-SNAPSHOT"
+        },
+        {
+            "id": "Inventory",
+            "minVersion": "1.1.0"
+        }
+    ],
+    "isLibrary": true,
+    "isAugmentation": true
 }
