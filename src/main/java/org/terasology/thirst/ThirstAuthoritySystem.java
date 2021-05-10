@@ -32,10 +32,6 @@ import org.terasology.engine.logic.characters.CharacterMoveInputEvent;
 import org.terasology.engine.logic.common.ActivateEvent;
 import org.terasology.engine.logic.delay.DelayManager;
 import org.terasology.engine.logic.delay.PeriodicActionTriggeredEvent;
-import org.terasology.module.health.events.ActivateRegenEvent;
-import org.terasology.module.health.events.DeactivateRegenEvent;
-import org.terasology.module.health.events.DoDamageEvent;
-import org.terasology.module.inventory.systems.InventoryManager;
 import org.terasology.engine.logic.inventory.ItemComponent;
 import org.terasology.engine.logic.players.event.OnPlayerRespawnedEvent;
 import org.terasology.engine.logic.players.event.OnPlayerSpawnedEvent;
@@ -43,12 +39,15 @@ import org.terasology.engine.registry.In;
 import org.terasology.engine.world.WorldComponent;
 import org.terasology.fluid.component.FluidContainerItemComponent;
 import org.terasology.fluid.system.FluidUtils;
+import org.terasology.module.health.events.BeforeRegenEvent;
+import org.terasology.module.health.events.DoDamageEvent;
+import org.terasology.module.inventory.systems.InventoryManager;
 import org.terasology.thirst.component.DrinkComponent;
 import org.terasology.thirst.component.ThirstComponent;
 import org.terasology.thirst.event.AffectThirstEvent;
 import org.terasology.thirst.event.DrinkConsumedEvent;
 
-import static org.terasology.module.health.systems.RegenAuthoritySystem.BASE_REGEN;
+import static org.terasology.module.health.core.BaseRegenAuthoritySystem.BASE_REGEN;
 
 /**
  * This authority system handles drink consumption by various entities.
@@ -95,7 +94,8 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     @ReceiveEvent
     public void onPeriodicActionTriggered(PeriodicActionTriggeredEvent event, EntityRef unusedEntity) {
         if (event.getActionId().equals(THIRST_DAMAGE_ACTION_ID)) {
-            for (EntityRef entity : entityManager.getEntitiesWith(ThirstComponent.class, AliveCharacterComponent.class)) {
+            for (EntityRef entity : entityManager.getEntitiesWith(ThirstComponent.class,
+                    AliveCharacterComponent.class)) {
                 ThirstComponent thirst = entity.getComponent(ThirstComponent.class);
                 thirst.lastCalculatedWater = Math.max(0,
                         thirst.lastCalculatedWater - (healthDecreaseInterval * thirst.waterDecayPerSecond) / 1000);
@@ -113,23 +113,29 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     }
 
     /**
-     * Cancels natural regeneration for an entity if its thirst level is lower than the healthLossThreshold.
+     * Cancels the base regeneration for an entity if their thirst level is lower than the health regen threshold. This
+     * only affects the base regeneration action. All other registered regeneration actions are ignored.
      *
-     * @param event  The ActivateRegenEvent, called before an entity is about to be regenerated.
-     * @param entity The entity which is being regenerated.
-     * @param thirst The ThirstComponent object, containing settings for Thirst.
+     * @param event The collector event for regeneration actions, called before an entity's health is about to
+     *         be regenerated.
+     * @param entity The entity whose health is about to be regenerated.
+     * @param thirst The entity's thirst configuration.
      */
     @ReceiveEvent
-    public void onHealthRegen(ActivateRegenEvent event, EntityRef entity, ThirstComponent thirst) {
-        if (ThirstUtils.getThirstForEntity(entity) < thirst.healthLossThreshold && event.id.equals(BASE_REGEN)) {
-            entity.send(new DeactivateRegenEvent());
+    public void beforeBaseRegen(BeforeRegenEvent event, EntityRef entity, ThirstComponent thirst) {
+        if (event.getId().equals(BASE_REGEN)) {
+            // TODO: health loss and regen stop should be separate
+            // Introduce dedicated healthStopRegenThreshold (as in hunger)
+            if (ThirstUtils.getThirstForEntity(entity) < thirst.healthLossThreshold) {
+                event.consume();
+            }
         }
     }
 
     /**
      * Initialize thirst attributes for a spawned player. Called when a player is spawned.
      *
-     * @param event  the event corresponding to the spawning of the player
+     * @param event the event corresponding to the spawning of the player
      * @param player a reference to the player entity
      * @param thirst the player's thirst component (to be initialized)
      */
@@ -141,7 +147,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     /**
      * Initialize thirst attributes for a respawned player. Called when a player is respawned.
      *
-     * @param event  the event corresponding to the respawning of the player
+     * @param event the event corresponding to the respawning of the player
      * @param player a reference to the player entity
      * @param thirst the player's thirst component (to be initialized)
      */
@@ -160,16 +166,17 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
      * Applies the drink's filling attribute to the instigator of the ActionEvent (the entity consuming the drink).
      *
      * @param event the event corresponding to the interaction with the drink
-     * @param item  the item that the player is drinking
+     * @param item the item that the player is drinking
      * @param drink the drink component associated with the item being consumed
      */
-    @ReceiveEvent(priority= EventPriority.PRIORITY_LOW)
+    @ReceiveEvent(priority = EventPriority.PRIORITY_LOW)
     public void drinkConsumed(ActivateEvent event, EntityRef item, DrinkComponent drink) {
         float filling = drink.filling;
         EntityRef instigator = event.getInstigator();
         ThirstComponent thirst = instigator.getComponent(ThirstComponent.class);
         if (thirst != null) {
-            thirst.lastCalculatedWater = Math.min(thirst.maxWaterCapacity, ThirstUtils.getThirstForEntity(instigator) + filling);
+            thirst.lastCalculatedWater = Math.min(thirst.maxWaterCapacity,
+                    ThirstUtils.getThirstForEntity(instigator) + filling);
             thirst.lastCalculationTime = time.getGameTimeInMs();
             instigator.saveComponent(thirst);
             item.send(new DrinkConsumedEvent(event));
@@ -185,7 +192,7 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
      * Deals with events happening after drink consumption, like removing water from the vessel
      *
      * @param event the event corresponding to the consumption of a drink
-     * @param item  the item that the player is drinking
+     * @param item the item that the player is drinking
      */
     @ReceiveEvent(components = ItemComponent.class, priority = EventPriority.PRIORITY_TRIVIAL)
     public void usedItem(DrinkConsumedEvent event, EntityRef item) {
@@ -217,9 +224,9 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
     /**
      * Updates the thirst attribute of the character upon movement, so that moving causes players to become thirsty.
      *
-     * @param event     the event associated with the movement of the character
+     * @param event the event associated with the movement of the character
      * @param character the character that has moved
-     * @param thirst    the thirst component associated with the character
+     * @param thirst the thirst component associated with the character
      */
     @ReceiveEvent(components = {ThirstComponent.class})
     public void characterMoved(CharacterMoveInputEvent event, EntityRef character, ThirstComponent thirst) {
