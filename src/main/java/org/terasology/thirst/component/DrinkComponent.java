@@ -13,7 +13,7 @@ public class DrinkComponent implements Component<DrinkComponent> {
     public float filling;
 
     @Override
-    public void copy(DrinkComponent other) {
+    public void copyFrom(DrinkComponent other) {
         this.filling = other.filling;
     }
 }

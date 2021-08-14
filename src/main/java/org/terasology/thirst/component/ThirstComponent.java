@@ -56,7 +56,7 @@ public class ThirstComponent implements Component<ThirstComponent> {
     public int healthDecreaseAmount = 5;
 
     @Override
-    public void copy(ThirstComponent other) {
+    public void copyFrom(ThirstComponent other) {
         this.maxWaterCapacity = other.maxWaterCapacity;
         this.lastCalculatedWater = other.lastCalculatedWater;
         this.lastCalculationTime = other.lastCalculationTime;
