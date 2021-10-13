@@ -20,7 +20,24 @@
                         "offset": 85
                     }
                 }
+            },
+            {
+                "type": "UIImage",
+                "image": "Thirst:thirstIcon",
+                "id": "thirstIcon",
+                "layoutInfo": {
+                    "width": 15,
+                    "height": 18,
+                    "position-horizontal-center": {
+                        "offset": 12
+                    },
+                    "position-bottom": {
+                        "target": "BOTTOM",
+                        "offset": 80
+                    }
+                }
             }
         ]
     }
 }
+
