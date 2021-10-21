@@ -5,6 +5,22 @@
         "type": "relativeLayout",
         "contents": [
             {
+                "type": "UIImage",
+                "image": "Thirst:thirstIcon",
+                "id": "thirstIcon",
+                "layoutInfo": {
+                    "width": 15,
+                    "height": 18,
+                    "position-horizontal-center": {
+                        "offset": 14
+                    },
+                    "position-bottom": {
+                        "target": "BOTTOM",
+                        "offset": 81
+                    }
+                }
+            },
+            {
                 "type": "UILoadBar",
                 "id": "thirst",
                 "animate": false,
@@ -12,15 +28,20 @@
                 "layoutInfo": {
                     "width": 200,
                     "height": 10,
-                    "position-horizontal-center": {
-                        "offset": 150
+                    "position-left": {
+                        "target": "LEFT",
+                        "widget": "thirstIcon",
+                        "offset": 45
                     },
                     "position-bottom": {
                         "target": "BOTTOM",
-                        "offset": 85
+                        "widget": "thirstIcon",
+                        "offset": 4
                     }
                 }
             }
+
         ]
     }
 }
+
