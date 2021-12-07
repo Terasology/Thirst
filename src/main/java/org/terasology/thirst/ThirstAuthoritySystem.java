@@ -21,7 +21,7 @@ import org.terasology.engine.core.Time;
 import org.terasology.engine.entitySystem.entity.EntityManager;
 import org.terasology.engine.entitySystem.entity.EntityRef;
 import org.terasology.engine.entitySystem.event.EventPriority;
-import org.terasology.engine.entitySystem.event.ReceiveEvent;
+import org.terasology.engine.entitySystem.event.Priority;
 import org.terasology.engine.entitySystem.prefab.Prefab;
 import org.terasology.engine.entitySystem.prefab.PrefabManager;
 import org.terasology.engine.entitySystem.systems.BaseComponentSystem;
@@ -39,6 +39,7 @@ import org.terasology.engine.registry.In;
 import org.terasology.engine.world.WorldComponent;
 import org.terasology.fluid.component.FluidContainerItemComponent;
 import org.terasology.fluid.system.FluidUtils;
+import org.terasology.gestalt.entitysystem.event.ReceiveEvent;
 import org.terasology.module.health.events.BeforeRegenEvent;
 import org.terasology.module.health.events.DoDamageEvent;
 import org.terasology.module.inventory.systems.InventoryManager;
@@ -169,7 +170,8 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
      * @param item the item that the player is drinking
      * @param drink the drink component associated with the item being consumed
      */
-    @ReceiveEvent(priority = EventPriority.PRIORITY_LOW)
+    @Priority(EventPriority.PRIORITY_LOW)
+    @ReceiveEvent
     public void drinkConsumed(ActivateEvent event, EntityRef item, DrinkComponent drink) {
         float filling = drink.filling;
         EntityRef instigator = event.getInstigator();
@@ -194,7 +196,8 @@ public class ThirstAuthoritySystem extends BaseComponentSystem {
      * @param event the event corresponding to the consumption of a drink
      * @param item the item that the player is drinking
      */
-    @ReceiveEvent(components = ItemComponent.class, priority = EventPriority.PRIORITY_TRIVIAL)
+    @Priority(EventPriority.PRIORITY_TRIVIAL)
+    @ReceiveEvent(components = ItemComponent.class)
     public void usedItem(DrinkConsumedEvent event, EntityRef item) {
         if (item.hasComponent(FluidContainerItemComponent.class)) {
             EntityRef owner = item.getOwner();
